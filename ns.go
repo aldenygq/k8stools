@@ -3,39 +3,38 @@ import (
     coreV1 "k8s.io/api/core/v1"
     "context"
     metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+    "k8s.io/client-go/kubernetes"
 )
-func (c *K8sClient) CreateNs(ns string) error {
-    //defer c.CloseClient()
+func CreateNs(c *kubernetes.Clientset,ns string) error {
     // 创建namespace的spec
 	var namespace coreV1.Namespace
 	namespace.Name = ns
-	_, err := c.Client.CoreV1().Namespaces().Create(context.TODO(),&namespace,metaV1.CreateOptions{})
+	_, err := c.CoreV1().Namespaces().Create(context.TODO(),&namespace,metaV1.CreateOptions{})
     if err != nil {
         return err
     }
 	return nil
 }
-func (c *K8sClient) NsInfo(ns string) (*coreV1.Namespace,error) {
-     //defer c.CloseClient()
-     namespaceInfo,err := c.Client.CoreV1().Namespaces().Get(context.TODO(),ns,metaV1.GetOptions{})
+func NsInfo(c *kubernetes.Clientset,ns string) (*coreV1.Namespace,error) {
+     namespaceInfo,err := c.CoreV1().Namespaces().Get(context.TODO(),ns,metaV1.GetOptions{})
      if err != nil {
-         return namespaceInfo,err
+         return nil,err
      }
      return namespaceInfo,nil
 }
 
-func (c *K8sClient) NsInfoList() (*coreV1.NamespaceList,error) {
+func NsInfoList(c *kubernetes.Clientset) (*coreV1.NamespaceList,error) {
     //defer c.CloseClient()
-    namespaceList,err := c.Client.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
+    namespaceList,err := c.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
     if err != nil {
-        return namespaceList,err
+        return nil,err
     }
     return namespaceList,nil
 }
 
-func (c *K8sClient) NsList() ([]string,error) {
+func NsList(c *kubernetes.Clientset) ([]string,error) {
     var nslist []string = make([]string,0)
-    nsinfos,err := c.NsInfoList()
+    nsinfos,err := NsInfoList(c)
     if err != nil {
         return nil,err
     }
@@ -49,8 +48,8 @@ func (c *K8sClient) NsList() ([]string,error) {
     return nslist,nil
 }
 
-func (c *K8sClient) DeleteNamespace(ns string) error {
-    err := c.Client.CoreV1().Namespaces().Delete(context.TODO(), ns, metaV1.DeleteOptions{})
+func DeleteNamespace(c *kubernetes.Clientset,ns string) error {
+    err := c.CoreV1().Namespaces().Delete(context.TODO(), ns, metaV1.DeleteOptions{})
     if err != nil {
         return err
     }

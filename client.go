@@ -4,19 +4,13 @@ import (
     "k8s.io/client-go/kubernetes"
     restclient "k8s.io/client-go/rest"
 )
-type K8sClient struct {
-    Client    *kubernetes.Clientset
-}
-func NewK8sClient(conf *restclient.Config) (*K8sClient,error){
+func NewK8sClient(conf *restclient.Config) (*kubernetes.Clientset,error){
 	// 根据客户端配置创建一个Kubernetes客户端
 	client, err := kubernetes.NewForConfig(conf)
 	if err != nil {
 		return nil,err
 	}
-
-	return &K8sClient{
-        Client:client,
-    },nil
+	return client,nil
 }
 func GetKubeconfigByFile(filepath string) (*restclient.Config,error) {
     config, err := clientcmd.BuildConfigFromFlags("", filepath)

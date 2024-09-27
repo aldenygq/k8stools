@@ -1,6 +1,10 @@
 package k8stools
 import (
-
+        "k8s.io/client-go/kubernetes"
+        coreV1 "k8s.io/api/core/v1"
+        "context"
+        metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+        "fmt"
 )
 func UpdateSecretByOpaque(c *kubernetes.Clientset,ns,secretname string,kv map[string][]byte) error {
     secret := &coreV1.Secret{

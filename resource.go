@@ -9,6 +9,7 @@ import (
     "k8s.io/client-go/kubernetes"
     "context"
     "errors"
+    rbacV1 "k8s.io/api/rbac/v1"
 )
 
 func CreateResource(c *kubernetes.Clientset,obj interface{}) error {
@@ -44,6 +45,8 @@ func CreateResource(c *kubernetes.Clientset,obj interface{}) error {
         _,err = c.StorageV1().StorageClasses().Create(context.TODO(), obj.(*storageV1.StorageClass),metaV1.CreateOptions{})
     case coreV1.ServiceAccount:
         _,err = c.CoreV1().ServiceAccounts("").Create(context.TODO(), obj.(*coreV1.ServiceAccount),metaV1.CreateOptions{})
+    case rbacV1.ClusterRole:
+        _,err = c.RbacV1().ClusterRoles().Create(context.TODO(), obj.(*rbacV1.ClusterRole), metaV1.CreateOptions{})
     default:
         return errors.New("resource type invaild")
     }

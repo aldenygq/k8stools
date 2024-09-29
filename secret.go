@@ -92,3 +92,23 @@ func UpdateSecretByImageCert(c *kubernetes.Clientset,ns,secretname,url,user,pass
 
     return nil
 }
+
+func CreateSecretByImageCert(c *kubernetes.Clientset,ns,secretname,url,user,password string) error {
+     dockerConfigJson := fmt.Sprintf(`{"auths":{"%v":{"username":"%v","password":"%v"}}}"`,url,user,password)
+     secret := &coreV1.Secret{
+         ObjectMeta: metaV1.ObjectMeta{
+             Name: secretname,
+         },
+         Type: coreV1.SecretTypeDockerConfigJson,
+         Data: map[string][]byte{
+             ".dockerconfigjson": []byte(dockerConfigJson),
+         },
+     }
+
+     _, err := c.CoreV1().Secrets(ns).Create(context.TODO(), secret, metaV1.CreateOptions{})
+     if err != nil {
+         return err
+     }
+
+     return nil
+}

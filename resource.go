@@ -47,6 +47,8 @@ func CreateResource(c *kubernetes.Clientset,obj interface{}) error {
         _,err = c.CoreV1().ServiceAccounts("").Create(context.TODO(), obj.(*coreV1.ServiceAccount),metaV1.CreateOptions{})
     case rbacV1.ClusterRole:
         _,err = c.RbacV1().ClusterRoles().Create(context.TODO(), obj.(*rbacV1.ClusterRole), metaV1.CreateOptions{})
+    case rbacV1.Role:
+        _,err = c.RbacV1().Roles("").Create(context.TODO(), obj.(*rbacV1.Role), metaV1.CreateOptions{})
     default:
         return errors.New("resource type invaild")
     }

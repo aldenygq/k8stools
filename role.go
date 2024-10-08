@@ -84,3 +84,18 @@ func DeleteClusterRoleBinding(c *kubernetes.Clientset,name string) error {
     }
     return nil
 }
+
+func RoleInfo(c *kubernetes.Clientset,ns,role string) (*rbacV1.Role,error) {
+    roleinfo,err := c.RbacV1().Roles(ns).Get(context.TODO(),role,metaV1.GetOptions{})
+    if err != nil {
+         return nil,err
+    }
+    return roleinfo,nil
+}
+func ClusterRoleInfo(c *kubernetes.Clientset,rolename string) (*rbacV1.ClusterRole,error) {
+    clusterrole,err := c.RbacV1().ClusterRoles().Get(context.TODO(),rolename,metaV1.GetOptions{})
+    if err != nil {
+        return nil,err
+    }
+    return clusterrole,nil
+}

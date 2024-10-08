@@ -190,3 +190,18 @@ func StatefulSetRollUpdate(c *kubernetes.Clientset,statefulset,ns string) error 
     }
     return nil
 }
+func DaemonSetList(c *kubernetes.Clientset,ns string) (*appsV1.DaemonSetList,error){
+    var (
+         daemonsets *appsV1.DaemonSetList = &appsV1.DaemonSetList{}
+         err error
+    )
+     if ns != "" {
+          daemonsets,err = c.AppsV1().DaemonSets(ns).List(context.Background(),metaV1.ListOptions{})
+     } else {
+         daemonsets,err = c.AppsV1().DaemonSets("").List(context.Background(),metaV1.ListOptions{})
+     }
+     if err != nil {
+         return nil,err
+     }
+     return  daemonsets,nil
+}

@@ -27,3 +27,7 @@ func GetKubeconfigByKubeconfig(kubeconfig string) (*restclient.Config,error) {
     }
     return config,nil
 }
+
+func Close(c *kubernetes.Clientset) {
+	c = nil
+}
